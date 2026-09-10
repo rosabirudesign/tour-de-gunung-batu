@@ -1,5 +1,5 @@
 import { getSupabaseAdmin, isSupabaseConfigured } from './supabase';
-import type { Registrant, JerseyPO, Settings, AdminUser } from './db';
+import type { Registrant, JerseyPO, Settings, AdminUser, BibLookupParticipant } from './db';
 
 // ==========================================
 // 1. SETTINGS
@@ -357,6 +357,20 @@ export async function getSupabaseRegistrationDetails(nomorRegistrasi: string): P
   };
 }
 
+export async function getSupabaseBibLookup(nomorBib: number): Promise<BibLookupParticipant | null> {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from('registrants')
+    .select('nomor_bib, nama_lengkap, komunitas, nomor_registrasi, jenis_registrasi')
+    .eq('nomor_bib', nomorBib)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data as BibLookupParticipant;
+}
+
 // ==========================================
 // 7. UPDATE PAYMENT STATUS
 // ==========================================
@@ -582,4 +596,3 @@ export async function updateSupabaseRegistrantAndPO(data: {
 
   return true;
 }
-

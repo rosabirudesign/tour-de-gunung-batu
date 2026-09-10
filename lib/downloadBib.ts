@@ -2,7 +2,7 @@ export async function generateBibCanvas(data: {
   nomorBib: number;
   namaLengkap: string;
   komunitas?: string;
-  nomorRegistrasi: string;
+  nomorRegistrasi?: string;
   jenisRegistrasi?: string;
 }): Promise<HTMLCanvasElement> {
   const canvas = document.createElement('canvas');
@@ -55,7 +55,7 @@ export async function generateBibCanvas(data: {
       const w = canvas.width;
       const h = canvas.height;
 
-      // 1. TOP-RIGHT BADGE: "OFFICIAL PARTICIPANT" (+15% Scaling)
+      // 1. Large official badge balances the event masthead and establishes status.
       const badgeFont = '900 60px sans-serif';
       ctx.font = badgeFont;
       const badgeText = 'OFFICIAL PARTICIPANT';
@@ -83,13 +83,12 @@ export async function generateBibCanvas(data: {
       ctx.textBaseline = 'middle';
       ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
 
-      // 2. PURE WHITE BOX ZONE - BIB Number with Sakana Font & Participant Name (+15% Scaling)
-      const formattedBib = String(data.nomorBib).padStart(3, '0');
+      // 2. The number owns the white zone; it must be readable from a distance.
+      const formattedBib = String(data.nomorBib).padStart(4, '0');
       const cleanName = (data.namaLengkap || 'PESERTA').toUpperCase();
 
-      // Bold, prominent font sizes (+15% scaling: 510 -> 585)
-      const bibFontSize = 585; // +15% enlarged Sakana font (height ~402px)
-      const bibBaselineY = 1030; // Top of number at ~628px (safely ~53px below logo)
+      const bibFontSize = 585;
+      const bibBaselineY = 1030;
 
       // Draw BIB Number with Sakana Font
       ctx.fillStyle = '#0A1338';
@@ -97,7 +96,7 @@ export async function generateBibCanvas(data: {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
 
-      // Subtle golden glow shadow matching web preview
+      // Warm glow separates the navy number from the pale photographic background.
       ctx.shadowColor = 'rgba(244, 199, 22, 0.45)';
       ctx.shadowBlur = 26;
       ctx.shadowOffsetY = 8;
@@ -108,9 +107,8 @@ export async function generateBibCanvas(data: {
       ctx.shadowBlur = 0;
       ctx.shadowOffsetY = 0;
 
-      // Draw Participant Name (+15% scaling: 100 -> 115)
       let nameFontSize = 115;
-      const nameBaselineY = 1148; // Cleanly placed below number, safely ~120px above route banner
+      const nameBaselineY = 1148;
 
       ctx.font = `900 ${nameFontSize}px sans-serif`;
       const maxNameWidth = w * 0.82;
@@ -125,9 +123,9 @@ export async function generateBibCanvas(data: {
       ctx.textBaseline = 'alphabetic';
       ctx.fillText(cleanName, w / 2, nameBaselineY);
 
-      // 3. ROUTE BANNER (top-[75%], +15% Scaling)
-      const bannerH = 90;
-      const bannerY = Math.round(h * 0.75 - bannerH / 2);
+      // 3. A strong route banner visually separates the ID zone from the footer.
+      const bannerH = 108;
+      const bannerY = Math.round(h * 0.78 - bannerH / 2);
       ctx.fillStyle = 'rgba(10, 19, 56, 0.95)';
       ctx.fillRect(0, bannerY, w, bannerH);
 
@@ -137,108 +135,69 @@ export async function generateBibCanvas(data: {
       ctx.fillRect(0, bannerY + bannerH - 3.5, w, 3.5);
 
       ctx.fillStyle = '#F4C716';
-      ctx.font = '900 44px sans-serif';
+      ctx.font = '900 46px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('JONGGOL → GUNUNG BATU   •   ELEVATION GAIN ±700M   •   SELF-SUPPORTED', w / 2, bannerY + bannerH / 2);
 
-      // 4. PROMINENT PRIDE BADGES (Always strictly 1 single horizontal row, +15% Scaling)
-      const komName = (data.komunitas || 'UMUM').toUpperCase();
-      const regCode = data.nomorRegistrasi || '';
-      const isPo = data.jenisRegistrasi === 'po_jersey';
-
-      const fontBadges = '900 50px sans-serif';
-      ctx.font = fontBadges;
-      const komText = `KOMUNITAS: ${komName}`;
-      const regText = `REG: ${regCode}`;
-      const poText = '♥ PO JERSEY';
-
-      const komTextW = ctx.measureText(komText).width;
-      const regTextW = ctx.measureText(regText).width;
-      const poTextW = isPo ? ctx.measureText(poText).width : 0;
-
+      // 4. Footer badges carry the participant identity without competing with the BIB number.
       const pillPadX = 54;
-      const komWidth = komTextW + pillPadX * 2;
-      const regWidth = regTextW + pillPadX * 2;
-      const poWidth = isPo ? poTextW + pillPadX * 2 : 0;
       const gap = 32;
+      const badgeItems = [
+        {
+          text: `KOMUNITAS: ${(data.komunitas || 'UMUM').toUpperCase()}`,
+          background: '#1D3AAE',
+          border: 'rgba(255, 255, 255, 0.3)',
+          color: '#FFFFFF',
+        },
+        data.nomorRegistrasi && {
+          text: `REG: ${data.nomorRegistrasi}`,
+          background: '#0A1338',
+          border: 'rgba(244, 199, 22, 0.7)',
+          color: '#F4C716',
+        },
+        data.jenisRegistrasi === 'po_jersey' && {
+          text: '♥ PO JERSEY',
+          background: '#F4C716',
+          border: '#0A1338',
+          color: '#0A1338',
+        },
+      ].filter(Boolean) as Array<{ text: string; background: string; border: string; color: string }>;
 
-      let totalRowW = komWidth + regWidth + (isPo ? poWidth + gap : 0);
+      if (badgeItems.length > 0) {
+        ctx.font = '900 50px sans-serif';
+        const badgeWidths = badgeItems.map((item) => ctx.measureText(item.text).width + pillPadX * 2);
+        const totalRowW = badgeWidths.reduce((total, width) => total + width, 0) + gap * (badgeItems.length - 1);
+        const scaleBadges = totalRowW > w * 0.94 ? (w * 0.94) / totalRowW : 1;
+        const pillH = Math.round(100 * scaleBadges);
+        const pillsY = Math.round(h * 0.905 - pillH / 2);
+        const pillRadius = Math.round(26 * scaleBadges);
+        const scaledGap = Math.round(gap * scaleBadges);
+        const scaledWidths = badgeWidths.map((width) => Math.round(width * scaleBadges));
+        const finalRowW = scaledWidths.reduce((total, width) => total + width, 0) + scaledGap * (badgeItems.length - 1);
+        let startX = Math.round((w - finalRowW) / 2);
 
-      // Auto-scale pills if total width exceeds 94% of canvas width
-      let scaleBadges = 1;
-      if (totalRowW > w * 0.94) {
-        scaleBadges = (w * 0.94) / totalRowW;
-      }
+        ctx.font = `900 ${Math.round(50 * scaleBadges)}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
 
-      const pillH = Math.round(100 * scaleBadges);
-      const pillsY = Math.round(h * 0.905 - pillH / 2);
-      const pillRadius = Math.round(26 * scaleBadges);
-
-      const scaledKomW = Math.round(komWidth * scaleBadges);
-      const scaledRegW = Math.round(regWidth * scaleBadges);
-      const scaledPoW = Math.round(poWidth * scaleBadges);
-      const scaledGap = Math.round(gap * scaleBadges);
-
-      const finalRowW = scaledKomW + scaledRegW + (isPo ? scaledPoW + scaledGap : 0);
-      let startX = Math.round((w - finalRowW) / 2);
-
-      const activeBadgeFontSize = Math.round(50 * scaleBadges);
-      ctx.font = `900 ${activeBadgeFontSize}px sans-serif`;
-
-      // 1) Komunitas Pill
-      ctx.fillStyle = '#1D3AAE';
-      ctx.beginPath();
-      if (typeof (ctx as any).roundRect === 'function') {
-        (ctx as any).roundRect(startX, pillsY, scaledKomW, pillH, pillRadius);
-      } else {
-        ctx.fillRect(startX, pillsY, scaledKomW, pillH);
-      }
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(komText, startX + scaledKomW / 2, pillsY + pillH / 2);
-
-      startX += scaledKomW + scaledGap;
-
-      // 2) Reg Code Pill
-      ctx.fillStyle = '#0A1338';
-      ctx.beginPath();
-      if (typeof (ctx as any).roundRect === 'function') {
-        (ctx as any).roundRect(startX, pillsY, scaledRegW, pillH, pillRadius);
-      } else {
-        ctx.fillRect(startX, pillsY, scaledRegW, pillH);
-      }
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(244, 199, 22, 0.7)';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      ctx.fillStyle = '#F4C716';
-      ctx.fillText(regText, startX + scaledRegW / 2, pillsY + pillH / 2);
-
-      if (isPo) {
-        startX += scaledRegW + scaledGap;
-        // 3) PO Jersey Pill
-        ctx.fillStyle = '#F4C716';
-        ctx.beginPath();
-        if (typeof (ctx as any).roundRect === 'function') {
-          (ctx as any).roundRect(startX, pillsY, scaledPoW, pillH, pillRadius);
-        } else {
-          ctx.fillRect(startX, pillsY, scaledPoW, pillH);
-        }
-        ctx.fill();
-        ctx.strokeStyle = '#0A1338';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        ctx.fillStyle = '#0A1338';
-        ctx.fillText(poText, startX + scaledPoW / 2, pillsY + pillH / 2);
+        badgeItems.forEach((item, index) => {
+          const badgeWidth = scaledWidths[index];
+          ctx.fillStyle = item.background;
+          ctx.beginPath();
+          if (typeof (ctx as any).roundRect === 'function') {
+            (ctx as any).roundRect(startX, pillsY, badgeWidth, pillH, pillRadius);
+          } else {
+            ctx.fillRect(startX, pillsY, badgeWidth, pillH);
+          }
+          ctx.fill();
+          ctx.strokeStyle = item.border;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.fillStyle = item.color;
+          ctx.fillText(item.text, startX + badgeWidth / 2, pillsY + pillH / 2);
+          startX += badgeWidth + scaledGap;
+        });
       }
 
       // 5. OUTER GOLDEN BORDER (Matching web preview card style)
@@ -347,7 +306,7 @@ export async function downloadBibCard(
     nomorBib: number;
     namaLengkap: string;
     komunitas?: string;
-    nomorRegistrasi: string;
+    nomorRegistrasi?: string;
     jenisRegistrasi?: string;
   },
   onIosFallback?: (dataUrl: string) => void
@@ -368,4 +327,3 @@ export async function downloadBibCard(
     alert('Gagal mengunduh gambar BIB. Silakan coba kembali.');
   }
 }
-

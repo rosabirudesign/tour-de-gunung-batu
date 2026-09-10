@@ -42,9 +42,9 @@ export default function SizeChart({ compact = false }: SizeChartProps) {
         </div>
       </div>
 
-      {/* Table Container (Ultra Compact - No Horizontal Scroll on Mobile) */}
-      <div className="rounded-xl sm:rounded-2xl border border-brand-sky/30 shadow-sm bg-white overflow-hidden">
-        <table className="w-full text-center border-collapse table-fixed">
+      {/* Table scrolls locally on narrow screens, never the page itself. */}
+      <div className="rounded-xl sm:rounded-2xl border border-brand-sky/30 shadow-sm bg-white overflow-x-auto overscroll-x-contain">
+        <table className="w-full min-w-[420px] text-center border-collapse table-fixed">
           <thead>
             <tr className="bg-gradient-to-r from-brand-navy via-brand-navyLight to-brand-royalDark text-white font-bold text-[11px] sm:text-xs uppercase">
               <th className="py-2 sm:py-3 px-1 w-[18%]">SIZE</th>

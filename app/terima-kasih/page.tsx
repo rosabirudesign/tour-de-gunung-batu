@@ -38,7 +38,7 @@ function Content() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-20 text-center">
+      <div className="min-h-screen pt-28 pb-20 text-center">
         <div className="animate-spin w-10 h-10 border-4 border-brand-royal border-t-transparent rounded-full mx-auto mb-4" />
         <p className="text-slate-600 text-sm font-semibold">Memuat Kartu Registrasi & BIB...</p>
       </div>
@@ -47,7 +47,7 @@ function Content() {
 
   if (!regCode || error || !data) {
     return (
-      <div className="min-h-screen py-20 px-4 text-center">
+      <div className="min-h-screen pt-28 pb-20 px-4 text-center">
         <div className="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-card border border-rose-200">
           <AlertCircle className="w-12 h-12 text-rose-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-slate-800 mb-2">Data Tidak Ditemukan</h2>
@@ -63,7 +63,7 @@ function Content() {
   const { registrant, jersey_po } = data;
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
+    <div className="min-h-screen pt-28 pb-10 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
       <TopoBackground />
 
       <div className="max-w-3xl mx-auto relative z-10 text-center space-y-6">

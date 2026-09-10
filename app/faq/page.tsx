@@ -59,7 +59,7 @@ export default function FAQPage() {
   ];
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
       <TopoBackground />
 
       <div className="max-w-4xl mx-auto relative z-10 space-y-8">

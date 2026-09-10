@@ -22,6 +22,14 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, []);
+
   const navLinks = [
     { href: '/', label: 'Beranda', icon: Flame },
     { href: '/wall-of-heroes', label: 'Wall of Heroes', icon: Users },
@@ -107,7 +115,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Glass Drawer */}
         {isOpen && (
-          <div className="lg:hidden mt-2.5 bg-brand-navy/95 backdrop-blur-2xl border border-brand-yellow/40 rounded-3xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-2 animate-fadeIn text-white ring-1 ring-white/10">
+          <div className="lg:hidden mt-2.5 max-h-[calc(100dvh-6.5rem)] overflow-y-auto overscroll-contain bg-brand-navy/95 backdrop-blur-2xl border border-brand-yellow/40 rounded-3xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-2 animate-fadeIn text-white ring-1 ring-white/10">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               const Icon = link.icon;
@@ -152,4 +160,3 @@ export default function Navbar() {
     </header>
   );
 }
-

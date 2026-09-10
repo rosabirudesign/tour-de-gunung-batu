@@ -17,6 +17,14 @@ export interface Registrant {
   created_at: string;
 }
 
+export interface BibLookupParticipant {
+  nomor_bib: number;
+  nama_lengkap: string;
+  komunitas: string;
+  nomor_registrasi: string;
+  jenis_registrasi: 'daftar_saja' | 'po_jersey';
+}
+
 export interface JerseyPO {
   id: string;
   registrant_id: string;
@@ -182,7 +190,8 @@ import {
   getSupabaseAllAdminData,
   deleteSupabaseRegistrant,
   deleteSupabaseJerseyPO,
-  updateSupabaseRegistrantAndPO
+  updateSupabaseRegistrantAndPO,
+  getSupabaseBibLookup
 } from './supabase-db';
 
 function getLocalSettings(): Settings {
@@ -417,6 +426,20 @@ function getLocalRegistrationDetails(nomorRegistrasi: string): { registrant: Reg
     registrant: reg,
     jersey_po: po,
     settings: db.settings
+  };
+}
+
+function getLocalBibLookup(nomorBib: number): BibLookupParticipant | null {
+  const db = readDB();
+  const registrant = db.registrants.find((item) => item.nomor_bib === nomorBib);
+  if (!registrant) return null;
+
+  return {
+    nomor_bib: registrant.nomor_bib,
+    nama_lengkap: registrant.nama_lengkap,
+    komunitas: registrant.komunitas,
+    nomor_registrasi: registrant.nomor_registrasi,
+    jenis_registrasi: registrant.jenis_registrasi,
   };
 }
 
@@ -676,6 +699,13 @@ export async function getRegistrationDetails(nomorRegistrasi: string): Promise<{
   return getLocalRegistrationDetails(nomorRegistrasi);
 }
 
+export async function getBibLookup(nomorBib: number): Promise<BibLookupParticipant | null> {
+  if (isSupabaseConfigured()) {
+    return getSupabaseBibLookup(nomorBib);
+  }
+  return getLocalBibLookup(nomorBib);
+}
+
 export async function updatePaymentStatus(
   poId: string, 
   status: 'lunas' | 'menunggu_verifikasi' | 'perlu_klarifikasi' | 'kedaluwarsa',
@@ -851,4 +881,3 @@ function updateLocalRegistrantAndPO(data: {
   writeDB(db);
   return true;
 }
-

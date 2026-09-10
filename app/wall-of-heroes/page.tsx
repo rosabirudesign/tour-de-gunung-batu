@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import TopoBackground from '@/components/TopoBackground';
-import { Users, Shirt, Search, Trophy, ShieldCheck, Heart, Award, ArrowRight, RefreshCw } from 'lucide-react';
+import { Users, Shirt, Search, Trophy, ShieldCheck, Heart, Award, ArrowRight, RefreshCw, Download } from 'lucide-react';
 
 export default function WallOfHeroesPage() {
   const [activeTab, setActiveTab] = useState<'peserta' | 'jersey'>('peserta');
@@ -69,7 +69,7 @@ export default function WallOfHeroesPage() {
   );
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
       <TopoBackground />
 
       <div className="max-w-6xl mx-auto relative z-10 space-y-8">
@@ -85,6 +85,10 @@ export default function WallOfHeroesPage() {
           <p className="text-slate-600 text-sm max-w-xl mx-auto mt-2">
             Penghormatan kepada seluruh pesepeda dan donatur yang telah terdaftar &amp; berpartisipasi dalam Tour de Gunung Batu 2026.
           </p>
+          <Link href="/susulan-po#cek-bib" className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-brand-royal hover:text-brand-navy">
+            <Download className="w-3.5 h-3.5" />
+            Sudah terdaftar? Cek &amp; download BIB di sini
+          </Link>
         </div>
 
         {/* Counter Summary Header */}
@@ -231,7 +235,7 @@ export default function WallOfHeroesPage() {
                     >
                       {/* BIB Circle */}
                       <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-mono font-black text-xs ${bibBg}`}>
-                        {p.nomor_bib}
+                        #{String(p.nomor_bib).padStart(4, '0')}
                       </div>
 
                       {/* Name + Komunitas */}
@@ -285,7 +289,7 @@ export default function WallOfHeroesPage() {
                   >
                     {/* BIB Circle — gold for jersey supporters */}
                     <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-mono font-black text-xs bg-amber-500 text-white">
-                      {j.nomor_bib}
+                      #{String(j.nomor_bib).padStart(4, '0')}
                     </div>
 
                     {/* Name + Komunitas */}

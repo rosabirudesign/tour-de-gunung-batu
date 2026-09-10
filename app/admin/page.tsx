@@ -1520,8 +1520,8 @@ export default function AdminDashboardPage() {
       </div>
 
       {previewImage && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-4 space-y-3">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto p-3 sm:p-4" role="dialog" aria-modal="true" aria-label="Pratinjau bukti transfer">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[calc(100dvh-1.5rem)] overflow-y-auto p-4 space-y-3 my-auto mx-auto">
             <div className="flex items-center justify-between border-b pb-2">
               <span className="font-bold text-sm text-slate-800">Bukti Transfer Pembayaran</span>
               <button
@@ -1556,8 +1556,8 @@ export default function AdminDashboardPage() {
       )}
 
       {editingItem && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-5 shadow-2xl my-8">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto p-3 sm:p-4" role="dialog" aria-modal="true" aria-label="Edit data peserta dan jersey">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[calc(100dvh-1.5rem)] overflow-y-auto p-5 sm:p-6 space-y-5 shadow-2xl my-auto mx-auto">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
                 <h3 className="font-extrabold text-lg text-brand-navy">Edit Data Peserta &amp; Jersey</h3>
@@ -1740,8 +1740,8 @@ export default function AdminDashboardPage() {
       )}
 
       {deleteRegistrantId && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl text-center">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto p-3 sm:p-4" role="dialog" aria-modal="true" aria-label="Konfirmasi hapus peserta">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl text-center my-auto mx-auto">
             <div className="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto">
               <Trash2 className="w-7 h-7" />
             </div>
@@ -1770,8 +1770,8 @@ export default function AdminDashboardPage() {
       )}
 
       {deletePoId && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl text-center">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto p-3 sm:p-4" role="dialog" aria-modal="true" aria-label="Konfirmasi hapus pesanan jersey">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl text-center my-auto mx-auto">
             <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
               <Shirt className="w-7 h-7" />
             </div>
@@ -1800,8 +1800,8 @@ export default function AdminDashboardPage() {
       )}
 
       {selectedBibParticipant && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 space-y-4 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto p-3 sm:p-4" role="dialog" aria-modal="true" aria-label="Kartu digital BIB peserta">
+          <div className="bg-white rounded-3xl max-w-xl w-full max-h-[calc(100dvh-1.5rem)] overflow-y-auto p-5 sm:p-6 space-y-4 shadow-2xl relative my-auto mx-auto">
             <button
               onClick={() => setSelectedBibParticipant(null)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors z-10"

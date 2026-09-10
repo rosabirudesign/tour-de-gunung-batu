@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import TopoBackground from '@/components/TopoBackground';
 import SizeChart from '@/components/SizeChart';
+import BibLookupCard from '@/components/BibLookupCard';
 import { Search, Shirt, Heart, AlertCircle, ArrowRight, UserCheck, CheckCircle, Bike, Ruler } from 'lucide-react';
 
 export default function SusulanPOPage() {
@@ -104,7 +105,7 @@ export default function SusulanPOPage() {
     : 0;
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
+    <div className="min-h-screen pt-28 pb-10 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
       <TopoBackground />
 
       <div className="max-w-2xl mx-auto relative z-10">
@@ -431,6 +432,10 @@ export default function SusulanPOPage() {
             )}
           </div>
         )}
+
+        <div className="mt-8">
+          <BibLookupCard />
+        </div>
       </div>
     </div>
   );

@@ -21,7 +21,6 @@ body {
   font-family: var(--font-sans);
   background-color: #F2F7FD;
   color: #0A1338;
-  overflow-x: hidden;
 }
 
 /* Custom Text Shadow for Retro Jersey Typography */

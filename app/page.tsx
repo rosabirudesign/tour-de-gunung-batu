@@ -129,6 +129,15 @@ export default async function HomePage() {
             </Link>
           </div>
 
+          <Link
+            href="/susulan-po#cek-bib"
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-brand-sky/70 bg-white/10 px-5 py-3 text-sm font-black text-brand-sky backdrop-blur-md transition-all duration-300 hover:scale-[1.03] hover:border-brand-yellow hover:bg-white/20 hover:text-brand-yellow"
+          >
+            <Download className="w-4 h-4" />
+            <span>CEK &amp; DOWNLOAD NOMOR BIB</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+
           {/* Countdown Component */}
           <div className="mt-10 sm:mt-12 max-w-4xl mx-auto">
             <CountdownTimer

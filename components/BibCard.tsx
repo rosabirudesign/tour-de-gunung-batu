@@ -1,21 +1,15 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { Download, Share2, Bike, Heart, Loader2, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Download, Share2, Loader2, X } from 'lucide-react';
 import { saveOrShareImage, generateBibCanvas } from '@/lib/downloadBib';
-import localFont from 'next/font/local';
-
-const sakanaFont = localFont({
-  src: '../public/fonts/Sakana.ttf',
-  display: 'swap',
-});
 
 interface BibCardProps {
   nomorBib: number;
   namaLengkap: string;
-  komunitas: string;
-  nomorRegistrasi: string;
-  jenisRegistrasi: 'daftar_saja' | 'po_jersey';
+  komunitas?: string;
+  nomorRegistrasi?: string;
+  jenisRegistrasi?: 'daftar_saja' | 'po_jersey';
 }
 
 export default function BibCard({
@@ -25,9 +19,38 @@ export default function BibCard({
   nomorRegistrasi,
   jenisRegistrasi
 }: BibCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [iosModalUrl, setIosModalUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewFailed, setPreviewFailed] = useState(false);
+
+  // The on-page preview is rendered from the same high-resolution canvas that
+  // is saved as PNG. This prevents browser breakpoints, font metrics, or text
+  // overflow from making the preview and the downloaded BIB look different.
+  useEffect(() => {
+    let active = true;
+
+    setPreviewUrl(null);
+    setPreviewFailed(false);
+
+    void generateBibCanvas({
+      nomorBib,
+      namaLengkap,
+      komunitas,
+      nomorRegistrasi,
+      jenisRegistrasi,
+    })
+      .then((canvas) => {
+        if (active) setPreviewUrl(canvas.toDataURL('image/png'));
+      })
+      .catch(() => {
+        if (active) setPreviewFailed(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [jenisRegistrasi, komunitas, namaLengkap, nomorBib, nomorRegistrasi]);
 
   const handleDownload = async () => {
     if (downloading) return;
@@ -70,65 +93,23 @@ export default function BibCard({
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto my-6">
-        {/* BIB Template Container with 1.419 Aspect Ratio */}
+    <div className="w-full max-w-2xl mx-auto my-6">
+        {/* The canvas preview is byte-for-byte the same composition as the PNG download. */}
         <div
-          ref={cardRef}
-          className="relative w-full aspect-[21014/14808] rounded-2xl overflow-hidden shadow-2xl border-2 border-brand-yellow/60 group bg-slate-900"
+          className="relative w-full aspect-[2482/1749] rounded-2xl overflow-hidden shadow-2xl bg-slate-900"
+          aria-busy={!previewUrl && !previewFailed}
         >
-          {/* Base Template Image */}
           <img
-            src="/bib-template-revisi.png?v=3"
-            alt="Tour de Gunung Batu BIB Template REVISI"
-            className="w-full h-full object-cover select-none"
+            src={previewUrl || '/bib-template-revisi.png?v=3'}
+            alt={`Nomor BIB ${String(nomorBib).padStart(4, '0')} untuk ${namaLengkap}`}
+            className="block w-full h-full object-cover select-none"
           />
 
-          {/* OVERLAY ELEMENTS (Custom Layout based on user design directive) */}
-          <div className="absolute inset-0 pointer-events-none">
-            
-            {/* 1. TOP-RIGHT BADGE: OFFICIAL PARTICIPANT */}
-            <div className="absolute top-[28.5%] right-[4%] transform -translate-y-1/2 z-10">
-              <span className="bg-[#0A1338] text-brand-yellow text-[10.5px] sm:text-[13px] md:text-[15px] font-black px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-full border-2 border-brand-yellow shadow-md uppercase tracking-wider block text-center">
-                OFFICIAL PARTICIPANT
-              </span>
+          {!previewUrl && (
+            <div className="absolute inset-x-0 bottom-0 bg-brand-navy/90 px-4 py-2 text-center text-xs font-bold text-brand-yellow">
+              {previewFailed ? 'Pratinjau BIB belum dapat dibuat. Silakan unduh ulang.' : 'Menyiapkan pratinjau BIB...'}
             </div>
-
-            {/* 2. PURE WHITE BOX ZONE (Only Large BIB Number & Participant Name using Sakana Font) */}
-            <div className="absolute top-[37%] bottom-[32%] left-[4%] right-[4%] flex flex-col items-center justify-center">
-              {/* Main BIB Number */}
-              <div className="text-center w-full my-auto">
-                <span className={`${sakanaFont.className} text-[7.8rem] sm:text-[9.8rem] md:text-[12rem] text-[#0A1338] tracking-tight drop-shadow-[0_4px_12px_rgba(244,199,22,0.35)] block leading-[0.9]`}>
-                  {String(nomorBib).padStart(3, '0')}
-                </span>
-                <h3 className="text-base sm:text-2xl md:text-[1.75rem] text-[#0A1338] font-black uppercase tracking-wide truncate max-w-[90%] mx-auto mt-0.5 sm:mt-1">
-                  {namaLengkap}
-                </h3>
-              </div>
-            </div>
-
-            {/* 3. ROUTE BANNER (Shifted 2% further down to top-[75%]) */}
-            <div className="absolute top-[75%] w-full bg-[#0A1338]/95 py-1.5 sm:py-2 px-2 text-center border-y border-brand-yellow/50 shadow-md">
-              <span className="text-[9.5px] sm:text-[12px] md:text-[15px] font-black text-brand-yellow tracking-widest block uppercase">
-                JONGGOL → GUNUNG BATU &nbsp;•&nbsp; ELEVATION GAIN ±700M &nbsp;•&nbsp; SELF-SUPPORTED
-              </span>
-            </div>
-
-            {/* 4. PROMINENT PRIDE BADGES (Always 1 single line on all screens) */}
-            <div className="absolute top-[90.5%] transform -translate-y-1/2 flex items-center justify-center flex-nowrap gap-2 sm:gap-3 px-2 w-full max-w-full">
-              <span className="bg-[#1D3AAE] text-white text-[9.5px] xs:text-[11.5px] sm:text-[14px] md:text-[17px] font-black px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl shadow-md border border-white/20 truncate max-w-[46%] uppercase tracking-wide whitespace-nowrap shrink-0">
-                KOMUNITAS: {(komunitas || 'UMUM').toUpperCase()}
-              </span>
-              <span className="bg-[#0A1338] text-brand-yellow text-[9.5px] xs:text-[11.5px] sm:text-[14px] md:text-[17px] font-mono font-black px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl shadow-md border border-brand-yellow/60 whitespace-nowrap shrink-0">
-                REG: {nomorRegistrasi}
-              </span>
-              {jenisRegistrasi === 'po_jersey' && (
-                <span className="bg-brand-yellow text-[#0A1338] text-[9.5px] xs:text-[11.5px] sm:text-[14px] md:text-[17px] font-black px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl shadow-md flex items-center border border-[#0A1338] whitespace-nowrap shrink-0">
-                  <Heart className="w-3 h-3 sm:w-4 sm:h-4 mr-1 fill-[#0A1338]" /> PO JERSEY
-                </span>
-              )}
-            </div>
-
-          </div>
+          )}
         </div>
 
       {/* Buttons Action */}
@@ -161,8 +142,8 @@ export default function BibCard({
 
       {/* iOS / Fallback Save Image Modal */}
       {iosModalUrl && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-brand-yellow/50 rounded-3xl p-5 max-w-lg w-full text-center text-white shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto p-3 sm:p-4" role="dialog" aria-modal="true" aria-label="Simpan gambar BIB">
+          <div className="bg-slate-900 border border-brand-yellow/50 rounded-3xl p-5 max-w-lg w-full max-h-[calc(100dvh-1.5rem)] overflow-y-auto text-center text-white shadow-2xl relative animate-in fade-in zoom-in duration-200 my-auto mx-auto">
             <button
               onClick={() => setIosModalUrl(null)}
               className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors"

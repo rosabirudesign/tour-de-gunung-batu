@@ -159,7 +159,7 @@ function DaftarFormContent() {
 
   if (isRegClosed) {
     return (
-      <div className="min-h-screen py-20 px-4 text-center">
+      <div className="min-h-screen pt-28 pb-20 px-4 text-center">
         <div className="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-card border border-rose-200">
           <AlertCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-brand-navy font-display mb-2">Pendaftaran Telah Ditutup</h2>
@@ -175,7 +175,7 @@ function DaftarFormContent() {
   }
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
+    <div className="min-h-screen pt-28 pb-10 px-4 sm:px-6 lg:px-8 relative bg-brand-iceBg">
       <TopoBackground />
 
       <div className="max-w-3xl mx-auto relative z-10">
@@ -630,7 +630,7 @@ function DaftarFormContent() {
 
 export default function DaftarPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen py-20 text-center text-sm font-semibold">Memuat formulir pendaftaran...</div>}>
+    <Suspense fallback={<div className="min-h-screen pt-28 pb-20 text-center text-sm font-semibold">Memuat formulir pendaftaran...</div>}>
       <DaftarFormContent />
     </Suspense>
   );

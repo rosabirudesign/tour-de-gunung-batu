@@ -68,7 +68,6 @@ export default function PeaderalImpactGallery() {
             <iframe
               src={`https://www.instagram.com/reel/${selectedReel.code}/embed`}
               className="w-full h-full border-0 rounded-xl"
-              allowTransparency
               allow="encrypted-media"
               title={selectedReel.title}
             />
