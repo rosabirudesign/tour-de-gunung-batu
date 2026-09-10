@@ -425,16 +425,16 @@ export default function AdminDashboardPage() {
   });
 
   return (
-    <div className="min-h-screen pt-24 sm:pt-28 md:pt-32 pb-12 px-3 sm:px-6 lg:px-8 relative bg-brand-iceBg">
+    <div className="min-h-screen pt-20 sm:pt-28 md:pt-32 pb-10 sm:pb-12 px-3 sm:px-6 lg:px-8 relative bg-brand-iceBg overflow-x-hidden">
       <TopoBackground />
 
       <div className="max-w-7xl mx-auto relative z-10 space-y-6">
-        <div className="bg-brand-navy text-white p-6 rounded-3xl border border-brand-yellow/40 shadow-glow flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-xl bg-brand-royal text-brand-yellow flex items-center justify-center font-black text-xl border border-brand-yellow shadow-sm">
+        <div className="bg-brand-navy text-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-yellow/40 shadow-glow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center space-x-3 min-w-0">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-xl bg-brand-royal text-brand-yellow flex items-center justify-center font-black text-xl border border-brand-yellow shadow-sm">
               {isSuperAdmin ? '⭐' : adminSession.pihak === 'rudeboys' ? 'R' : 'P'}
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center space-x-2">
                 <span className="text-xs font-bold text-brand-yellow uppercase tracking-widest">
                   {isSuperAdmin ? 'SUPERADMIN • ADMIN UTAMA' : `ADMIN PANEL • ${adminSession.pihak.toUpperCase()}`}
@@ -445,15 +445,15 @@ export default function AdminDashboardPage() {
                   </span>
                 )}
               </div>
-              <h1 className="text-xl font-extrabold font-display">{adminSession.nama_pic || adminSession.email_login}</h1>
-              <span className="text-xs text-brand-sky">Login: {adminSession.email_login} • Kontak: {adminSession.kontak_pic || '-'}</span>
+              <h1 className="text-lg sm:text-xl font-extrabold font-display break-words">{adminSession.nama_pic || adminSession.email_login}</h1>
+              <span className="block text-xs text-brand-sky break-words">Login: {adminSession.email_login} • Kontak: {adminSession.kontak_pic || '-'}</span>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={() => fetchAdminData(true)}
-              className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center space-x-1.5"
+              className="min-h-11 justify-center bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-2.5 rounded-xl border border-white/20 flex items-center space-x-1.5"
               title="Refresh Data"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -463,14 +463,14 @@ export default function AdminDashboardPage() {
               href="/api/admin/export"
               target="_blank"
               download
-              className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center space-x-1.5"
+              className="col-span-2 sm:col-auto min-h-11 justify-center bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center space-x-1.5"
             >
               <Download className="w-4 h-4" />
               <span>Unduh Rekap CSV</span>
             </a>
             <button
               onClick={handleLogout}
-              className="bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center space-x-1.5"
+              className="min-h-11 justify-center bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl flex items-center space-x-1.5"
             >
               <LogOut className="w-4 h-4" />
               <span>Keluar</span>
@@ -484,55 +484,59 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-2 bg-white p-2 rounded-2xl border border-brand-sky/30 shadow-card">
+        <div className="flex items-center gap-2 overflow-x-auto bg-white p-2 rounded-2xl border border-brand-sky/30 shadow-card [-webkit-overflow-scrolling:touch]">
           <button
             onClick={() => setActiveTab('verifikasi')}
-            className={`px-5 py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 ${
+            className={`shrink-0 min-h-11 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
               activeTab === 'verifikasi' ? 'bg-brand-navy text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <ShieldCheck className="w-4 h-4 text-brand-yellow" />
-            <span>Antrean Verifikasi PO Jersey ({poList.filter(p => p.jersey_po?.status_pembayaran === 'menunggu_verifikasi').length})</span>
+            <span className="sm:hidden">Verifikasi ({poList.filter(p => p.jersey_po?.status_pembayaran === 'menunggu_verifikasi').length})</span>
+            <span className="hidden sm:inline">Antrean Verifikasi PO Jersey ({poList.filter(p => p.jersey_po?.status_pembayaran === 'menunggu_verifikasi').length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('rekap')}
-            className={`px-5 py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 ${
+            className={`shrink-0 min-h-11 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
               activeTab === 'rekap' ? 'bg-brand-navy text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <Users className="w-4 h-4 text-brand-sky" />
-            <span>Rekap Semua Peserta ({registrantsData.length})</span>
+            <span className="sm:hidden">Rekap ({registrantsData.length})</span>
+            <span className="hidden sm:inline">Rekap Semua Peserta ({registrantsData.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('pengaturan')}
-            className={`px-5 py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 ${
+            className={`shrink-0 min-h-11 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
               activeTab === 'pengaturan' ? 'bg-brand-navy text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <SettingsIcon className="w-4 h-4 text-brand-sky" />
-            <span>Pengaturan Pembayaran &amp; QRIS</span>
+            <span className="sm:hidden">Pengaturan</span>
+            <span className="hidden sm:inline">Pengaturan Pembayaran &amp; QRIS</span>
           </button>
 
           {isSuperAdmin && (
             <button
               onClick={() => setActiveTab('kelola_pic')}
-              className={`px-5 py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 ${
+              className={`shrink-0 min-h-11 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
                 activeTab === 'kelola_pic'
                   ? 'bg-gradient-to-r from-brand-navy to-brand-royal text-brand-yellow shadow-md border border-brand-yellow/50'
                   : 'text-amber-700 bg-amber-50 hover:bg-amber-100'
               }`}
             >
               <UserPlus className="w-4 h-4 text-brand-yellow" />
-              <span>Manajemen Akun PIC</span>
+              <span className="sm:hidden">Akun PIC</span>
+              <span className="hidden sm:inline">Manajemen Akun PIC</span>
               <span className="bg-brand-yellow text-brand-navy text-[9px] font-black px-1.5 py-0.5 rounded">UTAMA</span>
             </button>
           )}
 
           <button
             onClick={() => setActiveTab('profil')}
-            className={`px-5 py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 ${
+            className={`shrink-0 min-h-11 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
               activeTab === 'profil' ? 'bg-brand-navy text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -542,7 +546,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {activeTab === 'verifikasi' && (
-          <div className="bg-white p-6 rounded-3xl border border-brand-sky/40 shadow-card space-y-6">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-sky/40 shadow-card space-y-5 sm:space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
               <div>
                 <h2 className="text-lg font-bold text-brand-navy">Antrean Verifikasi Pre-Order Jersey</h2>
@@ -551,7 +555,7 @@ export default function AdminDashboardPage() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full md:w-auto">
                 {[
                   { id: 'semua', label: 'Semua Status' },
                   { id: 'menunggu_verifikasi', label: 'Menunggu Verifikasi' },
@@ -561,7 +565,7 @@ export default function AdminDashboardPage() {
                   <button
                     key={tab.id}
                     onClick={() => setPoFilterStatus(tab.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    className={`min-h-10 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       poFilterStatus === tab.id
                         ? 'bg-brand-navy text-white shadow-sm'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -573,7 +577,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="relative max-w-md">
+            <div className="relative w-full max-w-md">
               <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
               <input
                 type="text"
@@ -598,7 +602,7 @@ export default function AdminDashboardPage() {
                   return (
                     <div key={p.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
                       <div className="flex items-start justify-between gap-2 border-b pb-2">
-                        <div>
+                        <div className="min-w-0">
                           <span className="font-extrabold text-sm text-brand-navy block">{r.nama_lengkap}</span>
                           <button
                             onClick={() => setSelectedBibParticipant(r)}
@@ -610,7 +614,7 @@ export default function AdminDashboardPage() {
                           </button>
                         </div>
                         <span
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                          className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
                             status === 'lunas'
                               ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                               : status === 'perlu_klarifikasi'
@@ -622,7 +626,7 @@ export default function AdminDashboardPage() {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-[10px] text-slate-400 block font-bold uppercase">Komunitas &amp; WA:</span>
                           <span className="font-semibold text-slate-700 block">{r.komunitas || 'Umum'}</span>
@@ -665,8 +669,8 @@ export default function AdminDashboardPage() {
                         )}
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t">
-                        <div className="flex items-center space-x-1">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t">
+                        <div className="flex flex-wrap items-center gap-1">
                           {status !== 'lunas' ? (
                             <>
                               <button
@@ -694,7 +698,7 @@ export default function AdminDashboardPage() {
                           )}
                         </div>
 
-                        <div className="flex items-center space-x-1">
+                        <div className="flex flex-wrap items-center gap-1">
                           <button
                             onClick={() => downloadBibCard({
                               nomorBib: r.nomor_bib,
@@ -905,8 +909,8 @@ export default function AdminDashboardPage() {
         )}
 
         {activeTab === 'rekap' && (
-          <div className="bg-white p-6 rounded-3xl border border-brand-sky/40 shadow-card space-y-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b pb-4">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-sky/40 shadow-card space-y-5 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
               <div>
                 <h2 className="text-lg font-bold text-brand-navy">Rekap Keseluruhan Peserta Terdaftar</h2>
                 <p className="text-xs text-slate-500">
@@ -918,14 +922,14 @@ export default function AdminDashboardPage() {
                 href="/api/admin/export"
                 target="_blank"
                 download
-                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center space-x-1.5"
+                className="w-full sm:w-auto min-h-11 justify-center bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center space-x-1.5"
               >
                 <Download className="w-4 h-4" />
                 <span>Download File Rekap CSV</span>
               </a>
             </div>
 
-            <div className="relative max-w-md">
+            <div className="relative w-full max-w-md">
               <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
               <input
                 type="text"
@@ -949,7 +953,7 @@ export default function AdminDashboardPage() {
                   return (
                     <div key={r.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
                       <div className="flex items-start justify-between gap-2 border-b pb-2">
-                        <div>
+                        <div className="min-w-0">
                           <span className="font-extrabold text-sm text-brand-navy block">{r.nama_lengkap}</span>
                           <button
                             onClick={() => setSelectedBibParticipant(r)}
@@ -975,7 +979,7 @@ export default function AdminDashboardPage() {
                         )}
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-[10px] text-slate-400 block font-bold uppercase">Komunitas &amp; WA:</span>
                           <span className="font-semibold text-slate-700 block">{r.komunitas || 'Umum'}</span>
@@ -1001,7 +1005,7 @@ export default function AdminDashboardPage() {
                         <span className="text-slate-600 text-[11px]">{r.alamat_lengkap}</span>
                       </div>
 
-                      <div className="flex items-center justify-end space-x-1.5 pt-2 border-t">
+                      <div className="flex flex-wrap items-center justify-start sm:justify-end gap-1.5 pt-2 border-t">
                         <button
                           onClick={() => downloadBibCard({
                             nomorBib: r.nomor_bib,
@@ -1160,7 +1164,7 @@ export default function AdminDashboardPage() {
         )}
 
         {activeTab === 'pengaturan' && (
-          <form onSubmit={handleSaveSettings} className="bg-white p-6 sm:p-8 rounded-3xl border border-brand-sky/40 shadow-card space-y-6">
+          <form onSubmit={handleSaveSettings} className="bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-sky/40 shadow-card space-y-5 sm:space-y-6">
             <h2 className="text-lg font-bold text-brand-navy border-b pb-3">
               Pengaturan QRIS Statis, Harga &amp; Rekening Bank Panitia
             </h2>
@@ -1282,7 +1286,7 @@ export default function AdminDashboardPage() {
 
         {activeTab === 'kelola_pic' && isSuperAdmin && (
           <div className="space-y-6">
-            <form onSubmit={handleCreatePIC} className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-brand-yellow/50 shadow-card space-y-6">
+            <form onSubmit={handleCreatePIC} className="bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-brand-yellow/50 shadow-card space-y-5 sm:space-y-6">
               <div className="border-b pb-3">
                 <div className="flex items-center space-x-2 text-brand-navy">
                   <UserPlus className="w-5 h-5 text-brand-yellow" />
@@ -1385,14 +1389,14 @@ export default function AdminDashboardPage() {
               </button>
             </form>
 
-            <div className="bg-white p-6 rounded-3xl border border-brand-sky/40 shadow-card space-y-4">
+            <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-sky/40 shadow-card space-y-4">
               <h3 className="font-extrabold text-brand-navy text-base flex items-center space-x-2 border-b pb-3">
                 <Users className="w-5 h-5 text-brand-royal" />
                 <span>Daftar Seluruh Akun Admin &amp; PIC Terdaftar ({adminsList.length})</span>
               </h3>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                <table className="min-w-[680px] w-full text-left text-xs">
                   <thead className="bg-brand-navy text-white uppercase text-[11px] font-bold">
                     <tr>
                       <th className="py-3 px-4">Pihak</th>
@@ -1479,7 +1483,7 @@ export default function AdminDashboardPage() {
         )}
 
         {activeTab === 'profil' && (
-          <form onSubmit={handleSaveProfile} className="bg-white p-6 sm:p-8 rounded-3xl border border-brand-sky/40 shadow-card space-y-6 max-w-xl">
+          <form onSubmit={handleSaveProfile} className="bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-sky/40 shadow-card space-y-5 sm:space-y-6 max-w-xl">
             <h2 className="text-lg font-bold text-brand-navy border-b pb-3">
               Profil &amp; Kontak PIC ({adminSession.pihak.toUpperCase()})
             </h2>
